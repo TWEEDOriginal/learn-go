@@ -1,23 +1,20 @@
 package main
 
 import (
-	"errors"
+	"bank/file_ops"
 	"fmt"
-	"os"
-	"strconv"
+	"github.com/Pallinder/go-randomdata"
 )
+
+const accountBalanceFile = "balance.txt"
 
 func main() {
 	fmt.Println("Welcome to the bank!")
+	fmt.Println("Reach us 24/7", randomdata.PhoneNumber())
 
 	for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit Money")
-		fmt.Println("3. Withdraw Money")
-		fmt.Println("4. Exit")
-
-		var accountBalance, err = getBalanceToFile()
+		presentOptions()
+		var accountBalance, err = file_ops.GetFloatFromFile(accountBalanceFile)
 
 		if err != nil {
 			fmt.Print("ERROR", "\n", err, "\n", "------", "\n")
@@ -34,7 +31,7 @@ func main() {
 			}
 			accountBalance += depositAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
-			writeBalanceToFile(accountBalance)
+			file_ops.WriteFloatToFile(accountBalanceFile, accountBalance)
 		} else if choice == 3 {
 			var withdrawAmount float64 = requestUserInput("Withdrawal amount: ")
 			if withdrawAmount <= 0 {
@@ -47,7 +44,7 @@ func main() {
 			}
 			accountBalance -= withdrawAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
-			writeBalanceToFile(accountBalance)
+			file_ops.WriteFloatToFile(accountBalanceFile, accountBalance)
 		} else {
 			fmt.Println("Goodbye!")
 			break
@@ -69,24 +66,4 @@ func requestUserInput(description string) float64 {
 	fmt.Print(description)
 	fmt.Scan(&input)
 	return input
-}
-
-const accountBalanceFile = "balance.txt"
-
-func getBalanceToFile() (float64, error) {
-	data, err := os.ReadFile(accountBalanceFile)
-	if err != nil {
-		return 1000, errors.New("failed to find balance file")
-	}
-	balanceText := string(data)
-	balance, err := strconv.ParseFloat(balanceText, 64)
-	if err != nil {
-		return 1000, errors.New("failed to fetch parse stored balance value")
-	}
-	return balance, err
-}
-
-func writeBalanceToFile(balance float64) {
-	balanceTxt := fmt.Sprint(balance)
-	os.WriteFile(accountBalanceFile, []byte(balanceTxt), 0644)
 }
