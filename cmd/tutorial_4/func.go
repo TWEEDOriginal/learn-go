@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 	// len is 8 because é uses 2 bytes
@@ -19,7 +21,7 @@ func main() {
 	// convert to rune array for proper indexing with len of chars
 	var mystring2 = []rune(mystring1)
 	fmt.Printf("\nLen of new string is %v", len(mystring2))
-    
+
 	var strSlice = []string{"s", "u", "p", "e", "r"}
 	// faster for creating strings
 	// arr alocated internally
@@ -28,6 +30,6 @@ func main() {
 		strBuilder.WriteString(strSlice[i])
 	}
 	// string is then formed from arr
-    var catStr = strBuilder.String()
+	var catStr = strBuilder.String()
 	fmt.Printf("\n%v", catStr)
 }
